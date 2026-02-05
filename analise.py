@@ -319,15 +319,30 @@ def main(username, name):
     total_devolvido = df_analise_cliente['VALOR_DEVOLVIDO'].sum()
     total_diferenca = df_analise_cliente['DIFERENCA_FLUXO'].sum()
 
-    TOTAL_CLIENTES_PRESENTES = 500
-    dados_clientes_cargos = {
-        "Acompanhante": 229,
-        "Balconista": 23,
-        "Comprador": 337,
-        "Proprietário": 641,
-        "Outros": 397
+    # 1. Definição dos dados por estado
+    clientes_por_estado = {
+        "BA": 42,
+        "CE": 347,
+        "MA": 56,
+        "PE": 33,
+        "PI": 23
     }
 
+    # 2. Lógica de exibição: Se for DIRETORIA e 'Todos', mostra a soma. 
+    # Caso contrário, mostra o valor do estado selecionado.
+    ref_estado = str(estado_selecionado).upper()
+
+    if ref_estado == 'TODOS' or ref_estado == 'DIRETORIA':
+        qtd_clientes_exibir = sum(clientes_por_estado.values())
+        label_clientes = "Total Clientes (Brasil)"
+    else:
+        # Busca o valor no dicionário. Se não achar, retorna 0.
+        qtd_clientes_exibir = clientes_por_estado.get(ref_estado, 0)
+        label_clientes = f"Clientes Únicos ({ref_estado})"
+
+    # ==============================
+    # RENDERIZAÇÃO NA INTERFACE
+    # ==============================
     main_kpi_col, main_kpi_tabela_col = st.columns([2, 1])
 
     with main_kpi_col:
@@ -352,12 +367,8 @@ def main(username, name):
                 delta_color=delta_color
             )
         with col_clientes:
-            
-            st.metric("Clientes Únicos", TOTAL_CLIENTES_PRESENTES)
-
-    with main_kpi_tabela_col:
-        st.subheader("Cargos - Cliente")
-        st.table(dados_clientes_cargos)
+            # Aqui a métrica se torna dinâmica
+            st.metric(label_clientes, qtd_clientes_exibir)
 
     # ==============================
     # 2. TOP PERFORMANCE
