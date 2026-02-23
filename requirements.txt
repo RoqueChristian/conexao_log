@@ -15,7 +15,7 @@ openpyxl
 
 # --- SECURITY & AUTH ---
 # Removi as versões fixas para evitar conflito de compilação no Linux
-streamlit-authenticator
+streamlit-authenticator==0.3.2
 bcrypt
 
 # --- OBSERVABILITY & VALIDATION ---
