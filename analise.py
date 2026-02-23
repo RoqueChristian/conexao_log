@@ -452,6 +452,34 @@ def main(username, name):
     else:
         st.info("Nenhum cliente encontrado.")
 
+    #==============================================================================================================================
+    # tabela de devolução clientes
+    #================================
+
+    st.header("Tabela de Clientes com Devolução")
+
+    # 1. Filtra apenas os fornecedores com valor devolvido maior que zero
+    df_com_devolucao = df_analise_cliente[df_analise_cliente['VALOR_DEVOLVIDO'] > 0]
+
+    if not df_com_devolucao.empty:
+        # 2. Ordena pelos que têm o MAIOR valor devolvido (opcional, pode manter DIFERENCA_FLUXO se preferir)
+        df_display_cliente = df_com_devolucao.sort_values(by='VALOR_DEVOLVIDO', ascending=False).copy()
+        
+        cols = ['CLIENTE',  'VALOR_DEVOLVIDO']
+        
+        # 3. Formata as colunas numéricas
+        for col in cols[1:]:
+            df_display_cliente[col] = df_display_cliente[col].apply(formatar_moeda)
+        
+        display_cols_cli = dict(zip(cols, ['CLIENTE', 'Valor Devolvido']))
+        df_display_cliente_final = df_display_cliente[cols].rename(columns=display_cols_cli)
+        
+        # 4. Exibe a tabela no Streamlit
+        st.dataframe(df_display_cliente_final, use_container_width=True)
+    else:
+        st.info("Nenhum CLIENTE com valor devolvido encontrado.")
+    #============================================================================================================================
+
     # ==============================
     # 6. TABELA DETALHADA POR FORNECEDOR 
     # ==============================
@@ -468,6 +496,34 @@ def main(username, name):
         st.dataframe(df_display_fornecedor_final, use_container_width=True)
     else:
         st.info("Nenhum fornecedor encontrado.")
+
+    #==============================================================================================================================
+    # tabela de devolução fornecedores
+    #================================
+
+    st.header("Tabela de Fornecedores com Devolução")
+
+    # 1. Filtra apenas os fornecedores com valor devolvido maior que zero
+    df_com_devolucao = df_analise_fornecedor[df_analise_fornecedor['VALOR_DEVOLVIDO'] > 0]
+
+    if not df_com_devolucao.empty:
+        # 2. Ordena pelos que têm o MAIOR valor devolvido (opcional, pode manter DIFERENCA_FLUXO se preferir)
+        df_display_fornecedor = df_com_devolucao.sort_values(by='VALOR_DEVOLVIDO', ascending=False).copy()
+        
+        cols = ['FORNECEDOR',  'VALOR_DEVOLVIDO']
+        
+        # 3. Formata as colunas numéricas
+        for col in cols[1:]:
+            df_display_fornecedor[col] = df_display_fornecedor[col].apply(formatar_moeda)
+        
+        display_cols_forn = dict(zip(cols, ['Fornecedor', 'Valor Devolvido']))
+        df_display_fornecedor_final = df_display_fornecedor[cols].rename(columns=display_cols_forn)
+        
+        # 4. Exibe a tabela no Streamlit
+        st.dataframe(df_display_fornecedor_final, use_container_width=True)
+    else:
+        st.info("Nenhum fornecedor com valor devolvido encontrado.")
+    #============================================================================================================================    
 
     # =========================================================
     # 7. CONEXÃO 2025 - CLIENTES FATURADOS (VERSÃO CORRIGIDA)
